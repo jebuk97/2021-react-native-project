@@ -118,9 +118,9 @@ class DetailsMaterialScreen extends React.Component {
     componentDidMount() {
       var min = this.props.min;
       var sec = this.props.sec;
-      console.log(this.props);
+      //console.log(this.props);
       var timeBySec = parseInt(min) * 60 + parseInt(sec);
-      console.log(timeBySec);
+      //console.log(timeBySec);
       this.setState({time:timeBySec})
       this.interval = setInterval(() => this.setState({ time: parseInt(this.state.time)+1 }), 1000);
     }
@@ -159,7 +159,11 @@ class DetailsMaterialScreen extends React.Component {
       teams: [],
       status: [],
       ongoing: false,
-      events: []
+      events: [], 
+      // goalName : [],
+      // goalTime : [],
+      // goalIsHome : [],
+      // goals : [],
     }
 
     constructor(props){
@@ -178,6 +182,8 @@ class DetailsMaterialScreen extends React.Component {
       
       var content = arr['content'];
       var events = content.matchFacts.events.events;
+      var info = content.matchFacts.infoBox;
+      //console.log(events);
       
       //console.log('1');
       //console.log(arr);
@@ -185,6 +191,8 @@ class DetailsMaterialScreen extends React.Component {
       this.setState({
         teams:teams,
         status:status,
+        events:events,
+        info:info,
       });
     }
 
@@ -230,16 +238,22 @@ class DetailsMaterialScreen extends React.Component {
         }
     }
 
-    outputEvents(events){
-     if(events.type=='Goal'){
-       if(events.isHome==true){
+    outputEvents(event){
+     if(event.type=='Goal'){
+      var assistStrKo= '';
+
+      if(event.assistStr!=null){
+        assistStrKo = '어시스트 '+event.assistStr.replace("assist by ", "");
+      }
+         //assistStrKo = '어시스트 ' + event.assist.replace("assist by ", "");
+       if(event.isHome==true){
          return(
           <View style={{flexDirection: 'row', marginRight: 'auto'}}>
-          <View style={{margin:5}}><Text>11</Text></View>
+          <View style={{margin:5}}><Text>{event.time}</Text></View>
           <View style={{margin:5}}><Ionicons name="ios-football" style={{fontSize:16}}></Ionicons></View>
           <View style={{margin:5}}>
-            <Text>Son</Text>
-            <Text>어시스트 Harry Kane</Text>
+            <Text>{event.nameStr}</Text>
+            <Text>{assistStrKo}</Text>
           </View>
         </View>
          );
@@ -247,16 +261,80 @@ class DetailsMaterialScreen extends React.Component {
           return(
           <View style={{flexDirection: 'row', marginLeft:'auto'}}>
               <View style={{margin:5}}>
-              <Text style={[styles.small, {textAlign:'right'}]}>Son</Text>
-                <Text style={[styles.small, {textAlign:'right'}]}>어시스트 Harry Kane</Text>
+              <Text style={[styles.small, {textAlign:'right'}]}>{event.nameStr}</Text>
+                <Text style={[styles.small, {textAlign:'right'}]}>{assistStrKo} </Text>
               </View>
               <View style={{margin:5}}><Ionicons name="ios-football" style={{fontSize:16}}></Ionicons></View>
-              <View style={{margin:5}}><Text>11</Text></View>
+              <View style={{margin:5}}><Text>{event.time}</Text></View>
             </View> 
           );
        }
-     } else if(events.type=='Subtitution'){
-
+     } else if(event.type=='Substitution'){
+       if(event.isHome==true){
+        return (
+          <View style={{flexDirection: 'row', marginRight:'auto'}}>
+          <View style={{margin:5}}><Text>{event.time}</Text></View>
+          <View style={{margin:5}}>
+            <Ionicons name="ios-arrow-back-circle" style={{fontSize: 15.2, color: 'green'}}></Ionicons>
+            <Ionicons name="ios-arrow-forward-circle" style={{fontSize: 15.2, color: 'red'}}></Ionicons>
+          </View>
+          <View style={{margin:5}}>
+            <Text style={[styles.small, {textAlign:'left', color: 'green'}]}>{event.swap[0].name}</Text>
+            <Text style={[styles.small, {textAlign:'left', color: 'red'}]}>{event.swap[1].name}</Text>
+          </View>
+        </View>
+          );
+       } else{
+        return (
+          <View style={{flexDirection: 'row', marginLeft:'auto'}}>
+          <View style={{margin:5}}>
+            <Text style={[styles.small, {textAlign:'right', color: 'green'}]}>{event.swap[0].name}</Text>
+            <Text style={[styles.small, {textAlign:'right', color: 'red'}]}>{event.swap[1].name}</Text>
+          </View>
+          <View style={{margin:5}}>
+            <Ionicons name="ios-arrow-back-circle" style={{fontSize: 15.2, color: 'green'}}></Ionicons>
+            <Ionicons name="ios-arrow-forward-circle" style={{fontSize: 15.2, color: 'red'}}></Ionicons>
+          </View>
+          <View style={{margin:5}}><Text>{event.time}</Text></View>
+        </View>
+        );
+       }
+     } else if(event.type=='Card'){
+      if(event.isHome==true){
+        return (
+          <View style={{flexDirection: 'row', marginRight:'auto'}}>
+          <View style={{margin:5}}><Text>{event.time}</Text></View>
+          <View style={{margin:5}}>
+            {event.card=="Yellow" ? <Ionicons name="tablet-portrait" style={{fontSize:16, color: 'orange'}}></Ionicons> : <Ionicons name="tablet-portrait" style={{fontSize:16, color: 'red'}}></Ionicons>}
+          </View>
+          <View style={{margin:5}}>
+            <Text>{event.nameStr}</Text>
+          </View>
+        </View>
+        );
+       } else{
+        return (
+          <View style={{flexDirection: 'row', marginLeft:'auto'}}>
+          <View style={{margin:5}}>
+            <Text>{event.nameStr}</Text>
+          </View>
+          <View style={{margin:5}}>
+            {event.card=="Yellow" ? <Ionicons name="tablet-portrait" style={{fontSize:16, color: 'orange'}}></Ionicons> : <Ionicons name="tablet-portrait" style={{fontSize:16, color: 'red'}}></Ionicons>}
+          </View>
+          <View style={{margin:5}}><Text>{event.time}</Text></View>
+        </View>
+        );
+       }
+     } else if(event.type=='AddedTime'){
+        return (<View style={{flexDirection: 'row', marginRight: 'auto'}}>
+        <View style={{margin:5}}><Text>{event.time}</Text></View>
+        <View style={{margin:5}}><MaterialIcons name="add-alarm" style={{fontSize:16}}></MaterialIcons></View>
+        <View style={{margin:5}}>
+          <Text style={styles.small}>{event.minutesAddedStr.replaceAll(" minutes added", "")}분 추가됨</Text>
+        </View>
+      </View>);
+     }else {
+       return <View><Text>{event.type}</Text></View>
      }
     }
 
@@ -264,6 +342,9 @@ class DetailsMaterialScreen extends React.Component {
       /* 2. Get the param, provide a fallback value if not available */
       var teams = this.state.teams;
       var status = this.state.status;
+      var events = this.state.events;
+      var info = this.state.info;
+      console.log(info);
       if(typeof(teams[0])=="undefined"){
         teams[0] = {
           "name": "",
@@ -292,6 +373,22 @@ class DetailsMaterialScreen extends React.Component {
               "long": ""
             }
           }
+          events = [{
+            "card": "",
+            "isHome": false,
+            "nameStr": "",
+            "overloadTime": null,
+            "overloadTimeStr": false,
+            "profileUrl": "",
+            "reactKey": "",
+            "time": 0,
+            "timeStr": "",
+            "type": "",
+            "swap": "",
+            "minutesAddedStr" : "",
+            "assistStr" : "",
+          
+          }]
       }
       return (
         <ScrollView>
@@ -322,77 +419,10 @@ class DetailsMaterialScreen extends React.Component {
             </View>
           </View>
           <View style={[styles.detailsContainer, {/*alignItems:'left'*/}]}>
-            
-          {/* 1팀 골 */}
-            <View style={{flexDirection: 'row', marginRight: 'auto'}}>
-              <View style={{margin:5}}><Text>11</Text></View>
-              <View style={{margin:5}}><Ionicons name="ios-football" style={{fontSize:16}}></Ionicons></View>
-              <View style={{margin:5}}>
-                <Text>Son</Text>
-                <Text>어시스트 Harry Kane</Text>
-              </View>
-            </View>
-  
-            {/* 2팀 카드  */}
-            <View style={{flexDirection: 'row', marginLeft:'auto'}}>
-              <View style={{margin:5}}>
-              <Text style={[styles.small, {textAlign:'right'}]}>Son</Text>
-              </View>
-              <View style={{margin:5}}><Ionicons name="tablet-portrait" style={{fontSize:16, color: 'orange'}}></Ionicons></View>
-              <View style={{margin:5}}><Text>11</Text></View>
-            </View>
-            <View style={{flexDirection: 'row', marginLeft:'auto'}}>
-              <View style={{margin:5}}>
-              <Text style={[styles.small, {textAlign:'right'}]}>Son</Text>
-              </View>
-              <View style={{margin:5}}><Ionicons name="tablet-portrait" style={{fontSize:16, color: 'red'}}></Ionicons></View>
-              <View style={{margin:5}}><Text>11</Text></View>
-            </View>
-  
-            {/* 2팀 골 */}
-            <View style={{flexDirection: 'row', marginLeft:'auto'}}>
-              <View style={{margin:5}}>
-              <Text style={[styles.small, {textAlign:'right'}]}>Son</Text>
-                <Text style={[styles.small, {textAlign:'right'}]}>어시스트 Harry Kane</Text>
-              </View>
-              <View style={{margin:5}}><Ionicons name="ios-football" style={{fontSize:16}}></Ionicons></View>
-              <View style={{margin:5}}><Text>11</Text></View>
-            </View>
-  
-          {/* 2팀 교체*/}
-            <View style={{flexDirection: 'row', marginLeft:'auto'}}>
-              <View style={{margin:5}}>
-                <Text style={[styles.small, {textAlign:'right', color: 'green'}]}>Son</Text>
-                <Text style={[styles.small, {textAlign:'right', color: 'red'}]}>Harry Kane</Text>
-              </View>
-              <View style={{margin:5}}>
-                <Ionicons name="ios-arrow-back-circle" style={{fontSize: 15.2, color: 'green'}}></Ionicons>
-                <Ionicons name="ios-arrow-forward-circle" style={{fontSize: 15.2, color: 'red'}}></Ionicons>
-              </View>
-              <View style={{margin:5}}><Text>11</Text></View>
-            </View>
-            
-            {/* 하프타임 */}
-            <View style={{flexDirection: 'row', marginRight: 'auto', marginLeft:'auto'}}>
-              <View style={{margin:5}}>
-                <Text style={{color: 'rgba(0, 0, 0, 0.2)'}}>────────</Text>
-              </View>
-              <View style={{margin:5}}><MaterialCommunityIcons name="whistle" style={{fontSize:16}}></MaterialCommunityIcons></View>
-              <View style={{margin:5}}>
-                <Text style={styles.small}>하프타임 2 - 1</Text>
-              </View>
-              <View style={{margin:5}}>
-                <Text style={{color: 'rgba(0, 0, 0, 0.2)'}}>────────</Text>
-              </View>
-            </View>
-            {/* 추가 시간 */}
-            <View style={{flexDirection: 'row', marginRight: 'auto'}}>
-              <View style={{margin:5}}><Text>90</Text></View>
-              <View style={{margin:5}}><MaterialIcons name="add-alarm" style={{fontSize:16}}></MaterialIcons></View>
-              <View style={{margin:5}}>
-                <Text style={styles.small}>추가시간 5분</Text>
-              </View>
-            </View>
+            {events.map(event=>
+            (
+              this.outputEvents(event)
+            ))}
             
             {/* <Text>itemId: {JSON.stringify(itemId)}</Text>
             <Text>otherParam: {JSON.stringify(otherParam)}</Text> */}
@@ -403,7 +433,7 @@ class DetailsMaterialScreen extends React.Component {
                 <Text>경기 날짜</Text>
               </View>
               <View>
-                <Text>2020년 12월 31일 오전 5:00</Text>
+                <Text>{info["Match Date"]}</Text>
               </View>
             </View>
             <View style={styles.infoContainer}>
@@ -411,7 +441,7 @@ class DetailsMaterialScreen extends React.Component {
                 <Text>리그</Text>
               </View>
               <View>
-                <Text>Premier League</Text>
+                <Text>{console.log(info["Tournament"])}</Text>
               </View>
             </View>
             <View style={styles.infoContainer}>
@@ -419,7 +449,7 @@ class DetailsMaterialScreen extends React.Component {
                 <Text>경기장</Text>
               </View>
               <View>
-                <Text>Stadium</Text>
+                <Text>{console.log(info["Stadium"])}</Text>
               </View>
             </View>
             <View style={styles.infoContainer}>
@@ -427,7 +457,7 @@ class DetailsMaterialScreen extends React.Component {
                 <Text>주심</Text>
               </View>
               <View>
-                <Text>Hello World</Text>
+                <Text>{console.log(info["Referee"])}</Text>
               </View>
             </View>
           </View>
