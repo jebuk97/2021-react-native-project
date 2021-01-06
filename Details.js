@@ -160,10 +160,6 @@ class DetailsMaterialScreen extends React.Component {
       status: [],
       ongoing: false,
       events: [], 
-      // goalName : [],
-      // goalTime : [],
-      // goalIsHome : [],
-      // goals : [],
     }
 
     constructor(props){
@@ -237,6 +233,60 @@ class DetailsMaterialScreen extends React.Component {
           return ;
         }
     }
+    saveGoalEvents(event, team1GoalName, team2GoalName){
+      var i = 0;
+      var isExist = false;
+      if(event.type=='Goal'){
+        var sliceStr = event.nameStr.substring(event.nameStr.indexOf(' '), event.nameStr.length).trim();
+        if(event.isHome==true){
+          for(i;i<team1GoalName.length;i++){
+            if(sliceStr == team1GoalName[i].substring(0, team1GoalName[i].indexOf(','))){
+              isExist = true;
+              break;
+            }
+          }
+          if(isExist == true){
+            if(sliceStr.indexOf(', Penalty') != -1){
+              team1GoalName[i] += ', '+event.time+ '\' (Pen)';
+            }
+            else{
+              team1GoalName[i] += ', '+event.time+ '\'';
+            }
+          }
+          else{
+            if(sliceStr.indexOf(', Penalty') != -1){
+              sliceStr = sliceStr.replace(', Penalty', '');
+              team1GoalName[team1GoalName.length] = sliceStr +', '+event.time+'\' (Pen)';
+            } else{
+              team1GoalName[team1GoalName.length] = sliceStr +', '+event.time+ '\''; 
+            }
+          }
+        } else{
+          for(i;i<team2GoalName.length;i++){
+            if(sliceStr == team2GoalName[i].substring(0, team2GoalName[i].indexOf(','))){
+              isExist = true;
+              break;
+            }
+          }
+          if(isExist == true){
+            if(sliceStr.indexOf(', Penalty') != -1){
+              team2GoalName[i] += ', '+event.time+ '\' (Pen)';
+            }
+            else{
+              team2GoalName[i] += ', '+event.time+ '\'';
+            }
+          }
+          else{
+            if(sliceStr.indexOf(', Penalty') != -1){
+              sliceStr = sliceStr.replace(', Penalty', '');
+              team2GoalName[team2GoalName.length] = sliceStr +', '+event.time+'\' (Pen)';
+            } else{
+              team2GoalName[team2GoalName.length] = sliceStr +', '+event.time+ '\''; 
+            }
+          }
+        }
+      }
+    }
 
     outputEvents(event){
      if(event.type=='Goal'){
@@ -266,7 +316,7 @@ class DetailsMaterialScreen extends React.Component {
               </View>
               <View style={{margin:5}}><Ionicons name="ios-football" style={{fontSize:16}}></Ionicons></View>
               <View style={{margin:5}}><Text>{event.time}</Text></View>
-            </View> 
+            </View>
           );
        }
      } else if(event.type=='Substitution'){
@@ -275,8 +325,8 @@ class DetailsMaterialScreen extends React.Component {
           <View style={{flexDirection: 'row', marginRight:'auto'}}>
           <View style={{margin:5}}><Text>{event.time}</Text></View>
           <View style={{margin:5}}>
-            <Ionicons name="ios-arrow-back-circle" style={{fontSize: 15.2, color: 'green'}}></Ionicons>
-            <Ionicons name="ios-arrow-forward-circle" style={{fontSize: 15.2, color: 'red'}}></Ionicons>
+            <Ionicons name="ios-arrow-forward-circle" style={{fontSize: 15.2, color: 'green'}}></Ionicons>
+            <Ionicons name="ios-arrow-back-circle" style={{fontSize: 15.2, color: 'red'}}></Ionicons>
           </View>
           <View style={{margin:5}}>
             <Text style={[styles.small, {textAlign:'left', color: 'green'}]}>{event.swap[0].name}</Text>
@@ -344,6 +394,8 @@ class DetailsMaterialScreen extends React.Component {
       var status = this.state.status;
       var events = this.state.events;
       var info = this.state.info;
+      var team1GoalName = [];
+      var team2GoalName = [];
       console.log(info);
       if(typeof(teams[0])=="undefined"){
         teams[0] = {
@@ -409,13 +461,21 @@ class DetailsMaterialScreen extends React.Component {
           </View>
           <View style={styles.scoreContainer}>
             <View style={{width:'35%', marginLeft: 'auto'}}>
-              <Text style={{textAlign:'right', color:'rgba(0, 0, 0, 0.7)'}}>Son 7', 37'</Text>
+              {events.map(event=>
+              (
+                this.saveGoalEvents(event, team1GoalName, team2GoalName)
+              ))}
+                {team1GoalName.map(name=>(
+                  <Text style={{color:'rgba(0, 0, 0, 0.7)', marginLeft: 'auto', fontSize: 12}}>{name}</Text>
+                ))}
             </View>
             <View>
               <Text style={{marginLeft:40, marginRight:40, color:'rgba(0, 0, 0, 0.7)'}}><Ionicons name="ios-football"></Ionicons></Text>
             </View>
             <View style={{width:'35%', marginRight: 'auto'}}>
-              <Text style={{color:'rgba(0, 0, 0, 0.7)'}}>Fernande 2' (Pen)</Text>
+                {team2GoalName.map(name=>(
+                  <Text style={{color:'rgba(0, 0, 0, 0.7)', fontSize: 12}}>{name}</Text>
+                ))}
             </View>
           </View>
           <View style={[styles.detailsContainer, {/*alignItems:'left'*/}]}>
