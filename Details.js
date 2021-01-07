@@ -396,7 +396,9 @@ class DetailsMaterialScreen extends React.Component {
       var info = this.state.info;
       var team1GoalName = [];
       var team2GoalName = [];
-      console.log(info);
+      var tournament = info["Tournament"];
+      var stadium = info["Stadium"];
+      var referee = info["Referee"];
       if(typeof(teams[0])=="undefined"){
         teams[0] = {
           "name": "",
@@ -441,7 +443,22 @@ class DetailsMaterialScreen extends React.Component {
             "assistStr" : "",
           
           }]
+          tournament = [];
+          stadium = [];
+          stadium["name"] = "";
+          referee = [];
+          referee["text"] = "";
       }
+
+      if(stadium==null){
+        stadium = [];
+        stadium["name"] = "NO-INFO";
+      }
+      if(referee==null){
+        referee = [];
+        referee["text"] = "NO-INFO";
+      }
+      console.log(stadium)
       return (
         <ScrollView>
         <View style={styles.container}>
@@ -501,25 +518,41 @@ class DetailsMaterialScreen extends React.Component {
                 <Text>리그</Text>
               </View>
               <View>
-                <Text>{console.log(info["Tournament"])}</Text>
+                <Text>{tournament.text}</Text>
               </View>
             </View>
-            <View style={styles.infoContainer}>
-              <View style={{width: '20%'}}>
-                <Text>경기장</Text>
-              </View>
-              <View>
-                <Text>{console.log(info["Stadium"])}</Text>
-              </View>
-            </View>
-            <View style={styles.infoContainer}>
-              <View style={{width: '20%'}}>
-                <Text>주심</Text>
-              </View>
-              <View>
-                <Text>{console.log(info["Referee"])}</Text>
-              </View>
-            </View>
+            
+            {
+                stadium.name == "NO-INFO" ? 
+                (<View style={[styles.infoContainer, { padding : 0 }]}>
+                  <View style={{width: '20%'}}>
+                  </View>
+                </View>) : 
+                (<View style={styles.infoContainer}>
+                  <View style={{width: '20%'}}>
+                    <Text>경기장</Text>
+                  </View>
+                  <View>
+                    <Text>{stadium.name}</Text>
+                  </View>
+                </View>)
+             }
+            {
+                referee.text == "NO-INFO" ? 
+                (<View style={[styles.infoContainer, { padding : 0 }]}>
+                  <View style={{width: '20%'}}>
+                  </View>
+                </View>) : 
+                (<View style={styles.infoContainer}>
+                  <View style={{width: '20%'}}>
+                    <Text>주심</Text>
+                  </View>
+                  <View>
+                    <Text>{referee.text}</Text>
+                  </View>
+                </View>)
+             }
+            
           </View>
         </View>
         </ScrollView>

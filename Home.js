@@ -4,7 +4,6 @@ import 'react-native-gesture-handler';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-
 import Axios from 'axios';
 import DetailsMaterialScreen from './Details.js'
 import Fotmob from './fotmob.js';
@@ -110,7 +109,6 @@ class HomeScreen extends React.Component {
 
   render() {
     const leagues = this.state.leagues;
-
     return (
       <ScrollView>
       <View style={styles.container}>
