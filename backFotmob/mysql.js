@@ -1,12 +1,6 @@
-
-var mysql = require('mysql');
+var connector = require('./connection.js');
 var fs = require('fs');
-var connection = mysql.createConnection({
-    host : 'localhost',
-    user :'root',
-    password : 'database',
-    database : 'fotmob2'
-});
+var connection = connector.backCreateConnection();
 connection.connect();
 connection.query('SELECT * FROM EXDATA', function (error, results, fields) {
     if (error) {
@@ -21,4 +15,3 @@ connection.query('SELECT * FROM EXDATA', function (error, results, fields) {
 
 
 connection.end();
-//please start code in 
