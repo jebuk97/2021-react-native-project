@@ -22,3 +22,20 @@ npm start
 폰에 expo 앱 설치 후 QR코드를 찍으면 자신의 폰에서도 프로젝트 실행 가능.
 
 깃에 사용된 모듈이 같이 올라가 있어서 따로 모듈 설치는 안해도 될 듯.
+
+
+## 2. 노드 js
+
+인터넷에 nodejs검색 
+안정화 버전설치
+
+## 3. mysql 설치
+mysql모듈 ==> npm install -S mysql
+아파치 같이 깔고 싶으면 bitnami검색 후 설치
+아파치 필요 없으면 그냥 mysql설치 
+
+~터미널에서 쓰이는 명령어들~
+--mysql -u root -p DB접속
+--CREATE DATABASE FOTMOB2; db선택
+--USE FOTMOB2
+--show databases
