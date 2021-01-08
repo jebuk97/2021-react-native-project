@@ -1,12 +1,12 @@
 # 2021-react-native-project
  
 ## 1. 리액트 네이티브 세팅 (expo)
-Expo CLI 설치
+-Expo CLI 설치
 ```
 npm install -g expo-cli
 ```
 
-Expo 프로젝트 실행
+-Expo 프로젝트 실행
 ```
 cd 프로젝트 디렉토리
 npm start
