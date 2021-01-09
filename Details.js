@@ -38,6 +38,11 @@ class DetailsMaterialScreen extends React.Component {
       console.log('Test Request to Server.');
       const response = await axios.get('http://localhost:3001/api');
       console.log(response.data);
+
+
+      console.log('Test Request to Server 2.');
+      const response2 = await axios.get('http://localhost:3001/test');
+      console.log(response2.data);
     }
 
     handleInput = text => {
