@@ -14,6 +14,78 @@ import { FlatList } from 'react-native-gesture-handler';
 const DetailsTopTab = createMaterialTopTabNavigator();
 //const socket = socektio.connect('http://localhost:3001');
 
+const testChats = [{
+  id : 1,
+  team : '1',
+  name : '작성자',
+  main : 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+  date : '2020.01.09',
+},
+{
+  id : 2,
+  team : '1',
+  name : '작성자',
+  main : 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+  date : '2020.01.09',
+},
+{
+  id : 3,
+  team : '2',
+  name : '작성자',
+  main : '그걸 못넣냐',
+  date : '2020.01.09',
+},
+{
+  id : 4,
+  team : '2',
+  name : '작성자',
+  main : '뭐해 씻팔!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+  date : '2020.01.09',
+},
+{
+id : 5,
+team : '1',
+name : '작성자',
+main : 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+date : '2020.01.09',
+},
+{
+  id : 6,
+  team : '1',
+  name : '작성자',
+  main : 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+  date : '2020.01.09',
+},
+{
+  id : 7,
+  team : '2',
+  name : '작성자',
+  main : '그걸 못넣냐',
+  date : '2020.01.09',
+},
+{
+  id : 8,
+  team : '2',
+  name : '작성자',
+  main : '뭐해 씻팔!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+  date : '2020.01.09',
+},
+{
+  id : 9,
+  team : '1',
+  name : '작성자',
+  main : 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+  date : '2020.01.09',
+},
+{
+  id : 10,
+  team : '1',
+  name : '작성자',
+  main : 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+  date : '2020.01.09',
+  },   
+];
+
 class DetailsMaterialScreen extends React.Component {
     render() {
     const { route } = this.props;
@@ -35,34 +107,9 @@ class DetailsMaterialScreen extends React.Component {
       input : "",
       target : '1',
       page: 1,
-      data : [{
-        id : 1,
-        team : '1',
-        name : '작성자',
-        main : 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
-        date : '2020.01.09',
-      },
-      {
-        id : 2,
-        team : '1',
-        name : '작성자',
-        main : 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
-        date : '2020.01.09',
-      },
-      {
-        id : 3,
-        team : '2',
-        name : '작성자',
-        main : '그걸 못넣냐',
-        date : '2020.01.09',
-      },
-      {
-        id : 4,
-        team : '2',
-        name : '작성자',
-        main : '뭐해 씻팔!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-        date : '2020.01.09',
-      }],
+      data : [],
+      status: [],
+      events: []
     };
 
     componentDidMount = async() => {
@@ -75,10 +122,34 @@ class DetailsMaterialScreen extends React.Component {
 
       // socket.on('new-chat', (obj) => {
       //   const chat = this.state.chat;
-      //   chat.unshift(obj);
-      //   this.setState({chat: chat});
+      //   obj.concat(chat);
+      //   this.setState({chat: obj});
       // })
+
+      this.getInfos();
+
+      this.setState({
+        data : testChats
+      });
+
     }
+
+      getInfos = async() => {
+      const { route } = this.props;
+      const { itemId, otherParam } = route.params;
+      const fotmob = new Fotmob();
+      var arr = await fotmob.getMatchDetails(itemId);
+      const header = arr['header'];
+      const status = header['status'];
+      
+      var content = arr['content'];
+      var events = content.matchFacts.events.events;
+      this.setState({
+        status:status,
+        events:events,
+    });
+    }
+
     handleSubmit = async() => {
       const { route } = this.props;
       const { itemId, otherParam } = route.params;
@@ -98,8 +169,90 @@ class DetailsMaterialScreen extends React.Component {
       console.log(response.data);
     }
 
-    onScroll = () => {
-      this.componentDidMount();
+    handleLoadMore = /*async*/() => {
+      this.setState({
+        page: this.state.page + 1
+      });
+      // const response = await axios.get('http://localhost:3001/chat?id='+itemId+'&page='+this.state.page);
+      // console.log(response.data);
+      var moreData = 
+      [{
+        id : this.state.page * 10 + 1,
+        team : '1',
+        name : '작성자',
+        main : this.state.page * 10 + 1+'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+        date : '2020.01.09',
+      },
+      {
+        id : this.state.page * 10 + 2,
+        team : '1',
+        name : '작성자',
+        main : this.state.page * 10 + 2+'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+        date : '2020.01.09',
+      },
+      {
+        id : this.state.page * 10 + 3,
+        team : '2',
+        name : '작성자',
+        main : this.state.page * 10 + 3+'그걸 못넣냐',
+        date : '2020.01.09',
+      },
+      {
+        id : this.state.page * 10 + 4,
+        team : '2',
+        name : '작성자',
+        main : this.state.page * 10 + 4+'뭐해 씻팔!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+        date : '2020.01.09',
+      },
+      {
+        id : this.state.page * 10 + 5,
+        team : '1',
+        name : '작성자',
+        main : this.state.page * 10 + 5+'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+        date : '2020.01.09',
+        },
+        {
+          id : this.state.page * 10 + 6,
+          team : '1',
+          name : '작성자',
+          main : this.state.page * 10 + 6+'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+          date : '2020.01.09',
+        },
+        {
+          id : this.state.page * 10 + 7,
+          team : '2',
+          name : '작성자',
+          main : this.state.page * 10 + 7+'그걸 못넣냐',
+          date : '2020.01.09',
+        },
+        {
+          id : this.state.page * 10 + 8,
+          team : '2',
+          name : '작성자',
+          main : this.state.page * 10 + 8+'뭐해 씻팔!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+          date : '2020.01.09',
+        },
+        {
+          id : this.state.page * 10 + 9,
+          team : '1',
+          name : '작성자',
+          main : this.state.page * 10 + 9+'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+          date : '2020.01.09',
+        },
+        {
+          id : this.state.page * 10 + 10,
+          team : '1',
+          name : '작성자',
+          main : this.state.page * 10 + 10+'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+          date : '2020.01.09',
+          }, ];
+      if(moreData.length==0){
+        return;
+      }
+      console.log(this.state.data);
+      this.setState({
+        data : this.state.data.concat(moreData)
+      })
     }
 
 
@@ -115,6 +268,127 @@ class DetailsMaterialScreen extends React.Component {
       });
     };
 
+    renderRecentEvent(){
+      const event = this.state.events[0];
+      if(this.state.status.started == true && this.state.status.finished == false){
+        if(event.type=='Goal'){
+          var assistStrKo= '';
+    
+          if(event.assistStr!=null){
+            assistStrKo = '어시스트 '+event.assistStr.replace("assist by ", "");
+          }
+             //assistStrKo = '어시스트 ' + event.assist.replace("assist by ", "");
+           if(event.isHome==true){
+             return(
+              <View style={styles.detailsContainer}>
+              <View style={{flexDirection: 'row', marginRight: 'auto'}}>
+              <View style={{margin:5}}><Text>{event.time}</Text></View>
+              <View style={{margin:5}}><Ionicons name="ios-football" style={{fontSize:16}}></Ionicons></View>
+              <View style={{margin:5}}>
+                <Text>{event.nameStr}</Text>
+                <Text>{assistStrKo}</Text>
+              </View>
+            </View>
+            </View>
+             );
+           } else{
+              return(
+                <View style={styles.detailsContainer}>
+              <View style={{flexDirection: 'row', marginLeft:'auto'}}>
+                  <View style={{margin:5}}>
+                  <Text style={[styles.small, {textAlign:'right'}]}>{event.nameStr}</Text>
+                    <Text style={[styles.small, {textAlign:'right'}]}>{assistStrKo} </Text>
+                  </View>
+                  <View style={{margin:5}}><Ionicons name="ios-football" style={{fontSize:16}}></Ionicons></View>
+                  <View style={{margin:5}}><Text>{event.time}</Text></View>
+                </View>
+                </View>                
+              );
+           }
+         } else if(event.type=='Substitution'){
+           if(event.isHome==true){
+            return (
+              <View style={styles.detailsContainer}>
+              <View style={{flexDirection: 'row', marginRight:'auto'}}>
+              <View style={{margin:5}}><Text>{event.time}</Text></View>
+              <View style={{margin:5}}>
+                <Ionicons name="ios-arrow-forward-circle" style={{fontSize: 15.2, color: 'green'}}></Ionicons>
+                <Ionicons name="ios-arrow-back-circle" style={{fontSize: 15.2, color: 'red'}}></Ionicons>
+              </View>
+              <View style={{margin:5}}>
+                <Text style={[styles.small, {textAlign:'left', color: 'green'}]}>{event.swap[0].name}</Text>
+                <Text style={[styles.small, {textAlign:'left', color: 'red'}]}>{event.swap[1].name}</Text>
+              </View>
+            </View>
+            </View>
+              );
+           } else{
+            return (
+              <View style={styles.detailsContainer}>
+              <View style={{flexDirection: 'row', marginLeft:'auto'}}>
+              <View style={{margin:5}}>
+                <Text style={[styles.small, {textAlign:'right', color: 'green'}]}>{event.swap[0].name}</Text>
+                <Text style={[styles.small, {textAlign:'right', color: 'red'}]}>{event.swap[1].name}</Text>
+              </View>
+              <View style={{margin:5}}>
+                <Ionicons name="ios-arrow-back-circle" style={{fontSize: 15.2, color: 'green'}}></Ionicons>
+                <Ionicons name="ios-arrow-forward-circle" style={{fontSize: 15.2, color: 'red'}}></Ionicons>
+              </View>
+              <View style={{margin:5}}><Text>{event.time}</Text></View>
+            </View>
+            </View>
+            );
+           }
+         } else if(event.type=='Card'){
+          if(event.isHome==true){
+            return (
+              <View style={styles.detailsContainer}>
+              <View style={{flexDirection: 'row', marginRight:'auto'}}>
+              <View style={{margin:5}}><Text>{event.time}</Text></View>
+              <View style={{margin:5}}>
+                {event.card=="Yellow" ? <Ionicons name="tablet-portrait" style={{fontSize:16, color: 'orange'}}></Ionicons> : <Ionicons name="tablet-portrait" style={{fontSize:16, color: 'red'}}></Ionicons>}
+              </View>
+              <View style={{margin:5}}>
+                <Text>{event.nameStr}</Text>
+              </View>
+            </View>
+            </View>
+            );
+           } else{
+            return (
+              <View style={styles.detailsContainer}>
+              <View style={{flexDirection: 'row', marginLeft:'auto'}}>
+              <View style={{margin:5}}>
+                <Text>{event.nameStr}</Text>
+              </View>
+              <View style={{margin:5}}>
+                {event.card=="Yellow" ? <Ionicons name="tablet-portrait" style={{fontSize:16, color: 'orange'}}></Ionicons> : <Ionicons name="tablet-portrait" style={{fontSize:16, color: 'red'}}></Ionicons>}
+              </View>
+              <View style={{margin:5}}><Text>{event.time}</Text></View>
+            </View>
+            </View>
+            );
+           }
+         } else if(event.type=='AddedTime'){
+            return (
+              <View style={styles.detailsContainer}>
+            <View style={{flexDirection: 'row', marginRight: 'auto'}}>
+            <View style={{margin:5}}><Text>{event.time}</Text></View>
+            <View style={{margin:5}}><MaterialIcons name="add-alarm" style={{fontSize:16}}></MaterialIcons></View>
+            <View style={{margin:5}}>
+              <Text style={styles.small}>{event.minutesAddedStr.replace(" minutes added", "")}분 추가됨</Text>
+            </View>
+          </View>
+          </View>
+          );
+         }else {
+           return <View><Text>{event.type}</Text></View>
+         }
+      } else{
+        return;
+      }
+    }
+
     renderItem = ({item}) => {
       if(item.team == '1'){
         return (
@@ -126,7 +400,7 @@ class DetailsMaterialScreen extends React.Component {
       } else{
         return (
           <View style={styles.myChatContainer}>
-            <Text style={{color:'white'}}>{item.main}</Text>
+            <Text>{item.main}</Text>
             <Text style={styles.subTextWhite}>{item.name} &#183; {item.date}</Text>
           </View>
         );
@@ -147,11 +421,11 @@ class DetailsMaterialScreen extends React.Component {
               </TouchableOpacity>
 
               <TouchableOpacity
-              style={[styles.teamButton, {marginLeft: 'auto'}]}
+              style={[styles.awayTeamButton, {marginLeft: 'auto'}]}
               key = "2"
               onPress= {this.onPressAway}
               >
-                <Text style={[styles.submitButtonText, {color:'rgba(20, 126, 251, 1)'}]}>어웨이</Text>
+                <Text style={[styles.submitButtonText, {color:'rgba(0, 122, 255, 1)'}]}>어웨이</Text>
               </TouchableOpacity>
               </View>
         );
@@ -163,11 +437,11 @@ class DetailsMaterialScreen extends React.Component {
           key = "1"
           onPress={this.onPressHome}
           >
-            <Text style={[styles.submitButtonText, {color:'rgba(20, 126, 251, 1)'}]}>홈</Text>
+            <Text style={[styles.submitButtonText, {color:'rgba(255, 45, 85, 1)'}]}>홈</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-          style={[styles.selectedTeamButton, {marginLeft: 'auto'}]}
+          style={[styles.awaySelectedTeamButton, {marginLeft: 'auto'}]}
           key = "2"
           onPress= {this.onPressAway}
           >
@@ -184,10 +458,10 @@ class DetailsMaterialScreen extends React.Component {
   
       return(
         <SafeAreaView style={styles.container}>
-          <Text>Match ID : {itemId} *TEMP UI*</Text>
-          <View style={[styles.detailsContainer, {/*alignItems: 'left'*/}]}>
+            {this.renderRecentEvent()}
+          <View style={[styles.detailsContainer, {paddingBottom: 50/*alignItems: 'left'*/}]}>
           {this.renderTeamButtons()}
-          <View style={{flexDirection: 'row', width:'100%'}}>
+          <View style={{flexDirection: 'row', width:'100%', paddingBottom: 5}}>
             <TextInput
                 style={styles.input}
                 underlineColorAndroid="transparent"
@@ -210,6 +484,8 @@ class DetailsMaterialScreen extends React.Component {
                 renderItem={this.renderItem}
                 keyExtractor={(item) => String(item.id)}
                 style={{width:'100%'}}
+                onEndReached={this.handleLoadMore}
+                onEndReachedThreshold={0}
               />
           </View>
         </SafeAreaView>
@@ -615,7 +891,7 @@ class DetailsMaterialScreen extends React.Component {
               <View style={{width: '20%'}}>
                 <Text>경기 날짜</Text>
               </View>
-              <View>
+              <View style={{width: '80%'}}>
                 <Text>{info["Match Date"]}</Text>
               </View>
             </View>
@@ -623,7 +899,7 @@ class DetailsMaterialScreen extends React.Component {
               <View style={{width: '20%'}}>
                 <Text>리그</Text>
               </View>
-              <View>
+              <View style={{width: '80%'}}>
                 <Text>{tournament.text}</Text>
               </View>
             </View>
@@ -638,7 +914,7 @@ class DetailsMaterialScreen extends React.Component {
                   <View style={{width: '20%'}}>
                     <Text>경기장</Text>
                   </View>
-                  <View>
+                  <View style={{width: '80%'}}>
                     <Text>{stadium.name}</Text>
                   </View>
                 </View>)
@@ -653,7 +929,7 @@ class DetailsMaterialScreen extends React.Component {
                   <View style={{width: '20%'}}>
                     <Text>주심</Text>
                   </View>
-                  <View>
+                  <View style={{width: '80%'}}>
                     <Text>{referee.text}</Text>
                   </View>
                 </View>)
@@ -719,14 +995,14 @@ class DetailsMaterialScreen extends React.Component {
       borderRadius:5,
     },
     chatContainer: {
-      backgroundColor: 'rgba(0, 0, 0, 0.12)',
+      backgroundColor: 'rgba(255, 45, 85, 0.22)',
       borderRadius: 5,
       padding:10,
       marginRight:'auto',
       marginTop:10,
     },
     myChatContainer:{
-      backgroundColor: 'rgba(20, 126, 251, 1)',
+      backgroundColor: 'rgba(0, 122, 255, 0.22)',
       borderRadius: 5,
       padding:10,
       marginLeft:'auto',
@@ -737,7 +1013,7 @@ class DetailsMaterialScreen extends React.Component {
       marginTop:8
     },
     subTextWhite:{
-      color: 'rgba(255, 255, 255, 0.8)',
+      color: 'rgba(0, 0, 0, 0.8)',
       marginTop:8, 
       textAlign:'right',
     },
@@ -746,7 +1022,7 @@ class DetailsMaterialScreen extends React.Component {
       borderRadius: 5,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'rgba(20, 126, 251, 1)',
+      backgroundColor: 'rgba(0, 122, 255, 1)',
     },
     submitButtonText:{
       alignItems: 'stretch',
@@ -758,11 +1034,10 @@ class DetailsMaterialScreen extends React.Component {
       borderRadius: 5,
       alignItems: 'center',
       justifyContent: 'center',
-      color: 'rgba(20, 126, 251, 1)',
+      color: 'rgba(255, 45, 85, 1)',
       backgroundColor: 'white',
-      borderColor: 'rgba(20, 126, 251, 1)',
+      borderColor: 'rgba(255, 45, 85, 1)',
       borderWidth: 1,
-      marginTop: 10,
       marginBottom: 10,
     },
     selectedTeamButton: {
@@ -771,12 +1046,34 @@ class DetailsMaterialScreen extends React.Component {
       borderRadius: 5,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'rgba(20, 126, 251, 1)',
-      borderColor: 'rgba(20, 126, 251, 1)',
+      backgroundColor: 'rgba(255, 45, 85, 1)',
+      borderColor: 'rgba(255, 45, 85, 1)',
       borderWidth: 1,
-      marginTop: 10,
       marginBottom: 10,
-    }
+    },
+    awayTeamButton: {
+      width: '49%',
+      height: 20,
+      borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'rgba(0, 122, 255, 1)',
+      backgroundColor: 'white',
+      borderColor: 'rgba(0, 122, 255, 1)',
+      borderWidth: 1,
+      marginBottom: 10,
+    },
+    awaySelectedTeamButton: {
+      width: '49%',
+      height: 20,
+      borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(0, 122, 255, 1)',
+      borderColor: 'rgba(0, 122, 255, 1)',
+      borderWidth: 1,
+      marginBottom: 10,
+    },
   });
 
   export default DetailsMaterialScreen;

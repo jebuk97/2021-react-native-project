@@ -95,16 +95,46 @@ class HomeScreen extends React.Component {
 
  currentState(status){
     if(status.ongoing==true){
-      return status.liveTime.short;
-    } else if (status.finished==true || status.cancelled==true){
-      return status.reason.short;
-    } else {
-      return '';
+      return(
+      <View style={{flexDirection:'row', alignItems:'center', width: '17%'}}>
+        <Text style={{marginRight: 10}}>{status.liveTime.short}</Text>
+      </View>
+      );
+    } else if (status.cancelled==true){
+      return(
+        <View style={{flexDirection:'row', alignItems:'center', width: '16%'}}>
+          <Text style={{marginRight: 10}}>{status.reason.short}</Text>
+        </View>
+      );
+    } else if (status.finished==true) {
+      return(
+        <View style={{flexDirection:'row', alignItems:'center', width: '17%'}}>
+          <Text style={{marginRight: 0}}>{status.reason.short}</Text> 
+        </View>
+      );
+    } else{
+      return(
+        <View style={{flexDirection:'row', alignItems:'center', width: '16%'}}>
+          <Text style={{marginRight: 10}}></Text> 
+        </View>
+      ); 
     }
   }
 
   loadTeamImage(teamId){
     return 'https://www.fotmob.com/images/team/'+teamId+'_small';
+  }
+
+  renderTimeOrScore(status, match){
+    if(status.cancelled==true){
+      return status.startTimeStr;
+    }
+    else if(status.ongoing==true || status.finished==true){
+      return match.home.score+' - '+match.away.score;
+    }
+    else {
+      return status.startTimeStr;
+    } 
   }
 
   render() {
@@ -125,21 +155,18 @@ class HomeScreen extends React.Component {
               <TouchableOpacity style={styles.homeList} onPress={() => {
                 /* 1. Navigate to the Details route with params */
                 this.props.navigation.navigate('Details', {
-                  itemId: match.id,
-                  otherParam: 'Home -> Details',
+                  itemId: match.id
                 });
               }}>
-                <View style={{flexDirection:'row', alignItems:'center', width: '17%'}}>
-                   <Text>{this.currentState(match.status)}</Text>
-                </View>
-                <View style={{flexDirection:'row', alignItems:'center', width:'30%'}}>
+               {this.currentState(match.status)}
+                <View style={{flexDirection:'row', alignItems:'center', width: '30%'}}>
                   <Text  style={{textAlign: 'right', marginLeft:'auto'}}>{match.home.name}</Text>
                   <Image source={{uri: this.loadTeamImage(match.home.id)}} style={{width:35, height:35, margin:5}}/>
                 </View>
                 <View>
-                  <Text style={{marginLeft:10, marginRight:10}}>{match.home.score} - {match.away.score}</Text>
+                  <Text style={{marginLeft:8, marginRight:8}}>{this.renderTimeOrScore(match.status, match)}</Text>
                 </View>
-                <View style={{flexDirection:'row', alignItems:'center', width:'30%'}}>
+                <View style={{flexDirection:'row', alignItems:'center', width: '30%'}}>
                   <Image source={{uri: this.loadTeamImage(match.away.id)}} style={{width:35, height:35, margin:5}}/>
                   <Text style={{textAlign: 'left', marginRight:'auto'}}>{match.away.name}</Text>
                 </View>
