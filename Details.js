@@ -31,6 +31,22 @@ class DetailsMaterialScreen extends React.Component {
       input : "",
       target : "",
     };
+
+    componentDidMount(){
+      const { route } = this.props;
+      const { itemId, otherParam } = route.params;
+
+      axios.post('/backFotmob/mysql.js', {
+        id: itemId
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+    
     handleInput = text => {
       this.setState({input: text});
     }
