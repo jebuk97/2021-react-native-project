@@ -35,14 +35,20 @@ class DetailsMaterialScreen extends React.Component {
     };
 
     componentDidMount = async() => {
-      console.log('Test Request to Server.');
-      const response = await axios.get('http://localhost:3001/api');
+      const { route } = this.props;
+      const { itemId, otherParam } = route.params;
+
+      console.log('Test Request to http://localhost:3001/chat?id='+itemId+'.');
+      const response = await axios.get('http://localhost:3001/chat?id='+itemId);
       console.log(response.data);
 
+      // console.log('Test Request to http://localhost:3001/api.');
+      // const response1 = await axios.get('http://localhost:3001/api');
+      // console.log(response1.data);
 
-      console.log('Test Request to Server 2.');
-      const response2 = await axios.get('http://localhost:3001/test');
-      console.log(response2.data);
+      // console.log('Test Request to http://localhost:3001/test.');
+      // const response2 = await axios.get('http://localhost:3001/test');
+      // console.log(response2.data);
     }
 
     handleInput = text => {
