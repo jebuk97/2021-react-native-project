@@ -36,7 +36,7 @@ class DetailsMaterialScreen extends React.Component {
       const { route } = this.props;
       const { itemId, otherParam } = route.params;
 
-      axios.post('/backFotmob/mysql.js', {
+      axios.post('backFotmob/mysql.js', {
         id: itemId
       })
       .then(function (response) {
@@ -46,7 +46,7 @@ class DetailsMaterialScreen extends React.Component {
         console.log(error);
       });
     }
-    
+
     handleInput = text => {
       this.setState({input: text});
     }
