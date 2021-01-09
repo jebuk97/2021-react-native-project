@@ -8,6 +8,7 @@
  npm start
  ```
  2. 서버 켜기   
+ ##### 서버는 수정 시 재시동해야 반영됨.
  기존 콘솔말고 새 콘솔 추가해서
  ```
  node ./backFotmob/server.js
