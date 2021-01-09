@@ -2,6 +2,16 @@
 
 # 2021-react-native-project
  
+ ## 프로젝트 켜기
+ 1. 프론트엔드 켜기
+ ```
+ npm start
+ ```
+ 2. 서버 
+ 기존 콘솔말고 새 콘솔 추가해서
+ ```
+ node ./backFotmob/server.js
+ ```
 ## 1. 리액트 네이티브 세팅 (expo)
 -Expo CLI 설치
 ```
