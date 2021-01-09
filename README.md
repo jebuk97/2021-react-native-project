@@ -7,7 +7,7 @@
  ```
  npm start
  ```
- 2. 서버 
+ 2. 서버 켜기   
  기존 콘솔말고 새 콘솔 추가해서
  ```
  node ./backFotmob/server.js
