@@ -486,7 +486,7 @@ class DetailsMaterialScreen extends React.Component {
         <View style={{margin:5}}><Text>{event.time}</Text></View>
         <View style={{margin:5}}><MaterialIcons name="add-alarm" style={{fontSize:16}}></MaterialIcons></View>
         <View style={{margin:5}}>
-          <Text style={styles.small}>{event.minutesAddedStr.replaceAll(" minutes added", "")}분 추가됨</Text>
+          <Text style={styles.small}>{event.minutesAddedStr.replace(" minutes added", "")}분 추가됨</Text>
         </View>
       </View>);
      }else {
