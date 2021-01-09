@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dimensions, Button, Text, View, StyleSheet, Image, TouchableOpacity, TextBase, TextInput, ScrollView, StatusBar } from 'react-native';
+import { SafeAreaView, Dimensions, Button, Text, View, StyleSheet, Image, TouchableOpacity, TextBase, TextInput, ScrollView, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,8 +8,11 @@ import react from 'react';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Fotmob from './fotmob.js';
 import axios from 'axios';
+//import socketio from 'socket.io-client';
+import { FlatList } from 'react-native-gesture-handler';
 
 const DetailsTopTab = createMaterialTopTabNavigator();
+//const socket = socektio.connect('http://localhost:3001');
 
 class DetailsMaterialScreen extends React.Component {
     render() {
@@ -30,106 +33,191 @@ class DetailsMaterialScreen extends React.Component {
   class ChatScreen extends React.Component{
     state = {
       input : "",
-      target : "",
-      chattings : [],
+      target : '1',
+      page: 1,
+      data : [{
+        id : 1,
+        team : '1',
+        name : '작성자',
+        main : 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+        date : '2020.01.09',
+      },
+      {
+        id : 2,
+        team : '1',
+        name : '작성자',
+        main : 'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
+        date : '2020.01.09',
+      },
+      {
+        id : 3,
+        team : '2',
+        name : '작성자',
+        main : '그걸 못넣냐',
+        date : '2020.01.09',
+      },
+      {
+        id : 4,
+        team : '2',
+        name : '작성자',
+        main : '뭐해 씻팔!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
+        date : '2020.01.09',
+      }],
     };
 
     componentDidMount = async() => {
       const { route } = this.props;
       const { itemId, otherParam } = route.params;
 
-      console.log('Test Request to http://localhost:3001/chat?id='+itemId+'.');
-      const response = await axios.get('http://localhost:3001/chat?id='+itemId);
+      console.log('Test Request to http://localhost:3001/chat?id='+itemId+'&page='+this.state.page);
+      const response = await axios.get('http://localhost:3001/chat?id='+itemId+'&page='+this.state.page);
       console.log(response.data);
 
-      // console.log('Test Request to http://localhost:3001/api.');
-      // const response1 = await axios.get('http://localhost:3001/api');
-      // console.log(response1.data);
+      // socket.on('new-chat', (obj) => {
+      //   const chat = this.state.chat;
+      //   chat.unshift(obj);
+      //   this.setState({chat: chat});
+      // })
+    }
+    handleSubmit = async() => {
+      const { route } = this.props;
+      const { itemId, otherParam } = route.params;
 
-      // console.log('Test Request to http://localhost:3001/test.');
-      // const response2 = await axios.get('http://localhost:3001/test');
-      // console.log(response2.data);
+      const name = '익명';
+      const text = this.state.input;
+      const team = this.state.target;
+      this.setState({input: ''});
+      console.log(text+' submit');
+      const response = await axios.post('http://localhost:3001/newChat', {
+        params: {
+          name: name,
+          text: text,
+          targetTeam: team
+        }
+      });
+      console.log(response.data);
     }
 
-    handleInput = text => {
-      this.setState({input: text});
+    onScroll = () => {
+      this.componentDidMount();
+    }
+
+
+    onPressHome = () => {
+      this.setState({
+        target: '1'
+      });
+    };
+
+    onPressAway = () => {
+      this.setState({
+        target: '2'
+      });
+    };
+
+    renderItem = ({item}) => {
+      if(item.team == '1'){
+        return (
+          <View style={styles.chatContainer}>
+            <Text>{item.main}</Text>
+            <Text style={styles.subText}>{item.name} &#183; {item.date}</Text>
+          </View>
+        );
+      } else{
+        return (
+          <View style={styles.myChatContainer}>
+            <Text style={{color:'white'}}>{item.main}</Text>
+            <Text style={styles.subTextWhite}>{item.name} &#183; {item.date}</Text>
+          </View>
+        );
+      }
     }
   
+    renderTeamButtons() {
+      var currentTeam = this.state.target;
+      if(currentTeam == '1'){
+        return (
+          <View style={{flexDirection: 'row', width:'100%'}}>
+          <TouchableOpacity
+              style={styles.selectedTeamButton}
+              key = "1"
+              onPress={this.onPressHome}
+              >
+                <Text style={styles.submitButtonText}>홈</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+              style={[styles.teamButton, {marginLeft: 'auto'}]}
+              key = "2"
+              onPress= {this.onPressAway}
+              >
+                <Text style={[styles.submitButtonText, {color:'rgba(20, 126, 251, 1)'}]}>어웨이</Text>
+              </TouchableOpacity>
+              </View>
+        );
+      } else {
+        return (
+          <View style={{flexDirection: 'row', width:'100%'}}>
+          <TouchableOpacity
+          style={styles.teamButton}
+          key = "1"
+          onPress={this.onPressHome}
+          >
+            <Text style={[styles.submitButtonText, {color:'rgba(20, 126, 251, 1)'}]}>홈</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+          style={[styles.selectedTeamButton, {marginLeft: 'auto'}]}
+          key = "2"
+          onPress= {this.onPressAway}
+          >
+            <Text style={styles.submitButtonText}>어웨이</Text>
+          </TouchableOpacity>
+          </View>
+          );
+      }
+    }
+
     render() {
       const { route } = this.props;
       const { itemId, otherParam } = route.params;
   
       return(
-        <ScrollView>
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
           <Text>Match ID : {itemId} *TEMP UI*</Text>
           <View style={[styles.detailsContainer, {/*alignItems: 'left'*/}]}>
+          {this.renderTeamButtons()}
           <View style={{flexDirection: 'row', width:'100%'}}>
             <TextInput
-              style={styles.input}
-              underlineColorAndroid="transparent"
-              placeholder="댓글을 작성하세요."
-              autoCapitalize="none"
-              onChangeText={this.handleInput}
-            />
-            <TouchableOpacity
-            style={styles.submitButton}
-            //onPress={() => this.login(this.state.email, this.state.password)}
-          >
-            <Text style={styles.submitButtonText}>등록</Text>
-          </TouchableOpacity>
-          </View>
-            <View>
-              <View style={styles.chatContainer}>
-                <Text>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</Text>
-                <Text style={styles.subText}>작성자1 &#183; 2020.12.31</Text>
-              </View>
-              <View style={styles.chatContainer}>
-                <Text>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</Text>
-                <Text style={styles.subText}>작성자 &#183; 2020.12.31</Text>
-              </View>
-              <View style={styles.myChatContainer}>
-                <Text style={{color:'white'}}>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</Text>
-                <Text style={styles.subTextWhite}>작성자 &#183; 2020.12.31</Text>
-              </View>
-              <View style={styles.chatContainer}>
-                <Text>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</Text>
-                <Text style={styles.subText}>작성자 &#183; 2020.12.31</Text>
-              </View>
-  
-              <View style={styles.chatContainer}>
-                <Text>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</Text>
-                <Text style={styles.subText}>작성자 &#183; 2020.12.31</Text>
-              </View>
-  
-              <View style={styles.chatContainer}>
-                <Text>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</Text>
-                <Text style={styles.subText}>작성자 &#183; 2020.12.31</Text>
-              </View>
-              <View style={styles.chatContainer}>
-                <Text>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</Text>
-                <Text style={styles.subText}>작성자 &#183; 2020.12.31</Text>
-              </View>
-              <View style={styles.chatContainer}>
-                <Text>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</Text>
-                <Text style={styles.subText}>작성자 &#183; 2020.12.31</Text>
-              </View>
-              <View style={styles.chatContainer}>
-                <Text>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</Text>
-                <Text style={styles.subText}>작성자 &#183; 2020.12.31</Text>
-              </View>
-              <View style={styles.chatContainer}>
-                <Text>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</Text>
-                <Text style={styles.subText}>작성자 &#183; 2020.12.31</Text>
-              </View>
+                style={styles.input}
+                underlineColorAndroid="transparent"
+                placeholder="댓글을 작성하세요."
+                autoCapitalize="none"
+                ref= {(el) => { this.input = el; }}
+                onChangeText={(input) => this.setState({input})}
+                value={this.state.input}
+              />
+              <TouchableOpacity
+              style={styles.submitButton}
+              key = "3"
+              onPress={this.handleSubmit}
+              >
+                <Text style={styles.submitButtonText}>등록</Text>
+              </TouchableOpacity>
             </View>
+              <FlatList
+                data={this.state.data}
+                renderItem={this.renderItem}
+                keyExtractor={(item) => String(item.id)}
+                style={{width:'100%'}}
+              />
           </View>
-        </View>
-        </ScrollView>
+        </SafeAreaView>
       );
     }
   }
 
+  
   class Timer extends React.Component{
     state = {
       time: 0
@@ -650,11 +738,11 @@ class DetailsMaterialScreen extends React.Component {
     },
     subTextWhite:{
       color: 'rgba(255, 255, 255, 0.8)',
-      marginTop:8
+      marginTop:8, 
+      textAlign:'right',
     },
     submitButton:{
       width:'10%',
-      backgroundColor: 'black',
       borderRadius: 5,
       alignItems: 'center',
       justifyContent: 'center',
@@ -664,6 +752,31 @@ class DetailsMaterialScreen extends React.Component {
       alignItems: 'stretch',
       color: 'white'
     },
+    teamButton: {
+      width: '49%',
+      height: 20,
+      borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'rgba(20, 126, 251, 1)',
+      backgroundColor: 'white',
+      borderColor: 'rgba(20, 126, 251, 1)',
+      borderWidth: 1,
+      marginTop: 10,
+      marginBottom: 10,
+    },
+    selectedTeamButton: {
+      width: '49%',
+      height: 20,
+      borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(20, 126, 251, 1)',
+      borderColor: 'rgba(20, 126, 251, 1)',
+      borderWidth: 1,
+      marginTop: 10,
+      marginBottom: 10,
+    }
   });
 
   export default DetailsMaterialScreen;
