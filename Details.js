@@ -7,6 +7,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import react from 'react';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Fotmob from './fotmob.js';
+import axios from 'axios';
 
 const DetailsTopTab = createMaterialTopTabNavigator();
 
@@ -30,21 +31,13 @@ class DetailsMaterialScreen extends React.Component {
     state = {
       input : "",
       target : "",
+      chattings : [],
     };
 
-    componentDidMount(){
-      const { route } = this.props;
-      const { itemId, otherParam } = route.params;
-
-      axios.post('backFotmob/mysql.js', {
-        id: itemId
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    componentDidMount = async() => {
+      console.log('Test Request to Server.');
+      const response = await axios.get('http://localhost:3001/api');
+      console.log(response.data);
     }
 
     handleInput = text => {
@@ -78,7 +71,7 @@ class DetailsMaterialScreen extends React.Component {
             <View>
               <View style={styles.chatContainer}>
                 <Text>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</Text>
-                <Text style={styles.subText}>작성자 &#183; 2020.12.31</Text>
+                <Text style={styles.subText}>작성자1 &#183; 2020.12.31</Text>
               </View>
               <View style={styles.chatContainer}>
                 <Text>ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ</Text>
@@ -235,17 +228,15 @@ class DetailsMaterialScreen extends React.Component {
       } else if(status.started == true){
           if(status.finished==false){
             var time = status.liveTime.long.split(':');
-            console.log(time);
             return <Timer option="1" min={time[0]} sec={time[1]}/>
             //return status.liveTime.long;
           } else{
-
             console.log('finished');
             return <Timer option={status.reason.long} />
             //return status.reason.long;
           }
         } else if(status.started == 'skip'){
-          console.log('skip');
+          //console.log('skip');
           return ;
         }
     }
@@ -474,7 +465,7 @@ class DetailsMaterialScreen extends React.Component {
         referee = [];
         referee["text"] = "NO-INFO";
       }
-      console.log(stadium)
+      
       return (
         <ScrollView>
         <View style={styles.container}>
