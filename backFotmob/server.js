@@ -9,8 +9,12 @@ const port = process.env.PORT || 3001;
 
 // app.use('/test', (req, res) => res.json({hello: 'this is Server! again!'}));
 
+app.use(bodyParser.json());
+
 app.use('/chat', (req, res) => res.json({ID: req.query.id, page: req.query.page}));
 
-app.use('/newChat', (req, res) => res.json({THIS : 'IS POST'}));
+app.use('/newChat', (req, res) => {
+    console.log(req.body);
+});
 
 app.listen(port, () => console.log('Server is running on port '+port));

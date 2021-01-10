@@ -120,10 +120,10 @@ class DetailsMaterialScreen extends React.Component {
       const response = await axios.get('http://localhost:3001/chat?id='+itemId+'&page='+this.state.page);
       console.log(response.data);
 
-      // socket.on('new-chat', (obj) => {
-      //   const chat = this.state.chat;
+      // socket.on('chatUpdate', (obj) => {
+      //   const chat = this.state.data;
       //   obj.concat(chat);
-      //   this.setState({chat: obj});
+      //   this.setState({data: obj});
       // })
 
       this.getInfos();
@@ -132,6 +132,10 @@ class DetailsMaterialScreen extends React.Component {
         data : testChats
       });
 
+    }
+
+    componentWillUnmount(){
+      // socket.off('chatUpdate');
     }
 
       getInfos = async() => {
@@ -160,11 +164,9 @@ class DetailsMaterialScreen extends React.Component {
       this.setState({input: ''});
       console.log(text+' submit');
       const response = await axios.post('http://localhost:3001/newChat', {
-        params: {
           name: name,
           text: text,
           targetTeam: team
-        }
       });
       console.log(response.data);
     }
