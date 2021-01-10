@@ -12,7 +12,8 @@ import axios from 'axios';
 import { FlatList } from 'react-native-gesture-handler';
 
 const DetailsTopTab = createMaterialTopTabNavigator();
-//const socket = socektio.connect('http://localhost:3001');
+const host = 'http://localhost';
+//const socket = socektio.connect(host+':3001');
 
 const testChats = [{
   id : 1,
@@ -116,8 +117,8 @@ class DetailsMaterialScreen extends React.Component {
       const { route } = this.props;
       const { itemId, otherParam } = route.params;
 
-      console.log('Test Request to http://localhost:3001/chat?id='+itemId+'&page='+this.state.page);
-      const response = await axios.get('http://localhost:3001/chat?id='+itemId+'&page='+this.state.page);
+      console.log('Test Request to '+host+':3001/chat?id='+itemId+'&page='+this.state.page);
+      const response = await axios.get(host+':3001/chat?id='+itemId+'&page='+this.state.page);
       console.log(response.data);
 
       // socket.on('chatUpdate', (obj) => {
@@ -163,7 +164,7 @@ class DetailsMaterialScreen extends React.Component {
       const team = this.state.target;
       this.setState({input: ''});
       console.log(text+' submit');
-      const response = await axios.post('http://localhost:3001/newChat', {
+      const response = await axios.post(host+':3001/newChat', {
           name: name,
           text: text,
           targetTeam: team
@@ -175,7 +176,7 @@ class DetailsMaterialScreen extends React.Component {
       this.setState({
         page: this.state.page + 1
       });
-      // const response = await axios.get('http://localhost:3001/chat?id='+itemId+'&page='+this.state.page);
+      // const response = await axios.get(host+':3001/chat?id='+itemId+'&page='+this.state.page);
       // console.log(response.data);
       var moreData = 
       [{
