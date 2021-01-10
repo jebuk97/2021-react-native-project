@@ -162,9 +162,11 @@ class DetailsMaterialScreen extends React.Component {
       const name = '익명';
       const text = this.state.input;
       const team = this.state.target;
+    
       this.setState({input: ''});
       console.log(text+' submit');
       const response = await axios.post(host+':3001/newChat', {
+          id: itemId,
           name: name,
           text: text,
           targetTeam: team
@@ -462,7 +464,7 @@ class DetailsMaterialScreen extends React.Component {
       return(
         <SafeAreaView style={styles.container}>
             {this.renderRecentEvent()}
-          <View style={[styles.detailsContainer, {paddingBottom: 50/*alignItems: 'left'*/}]}>
+          <View style={[styles.detailsContainer, {paddingBottom: 27/*alignItems: 'left'*/}]}>
           {this.renderTeamButtons()}
           <View style={{flexDirection: 'row', width:'100%', paddingBottom: 5}}>
             <TextInput
@@ -486,9 +488,9 @@ class DetailsMaterialScreen extends React.Component {
                 data={this.state.data}
                 renderItem={this.renderItem}
                 keyExtractor={(item) => String(item.id)}
-                style={{width:'100%'}}
+                style={{width:'100%', borderRadius: 5}}
                 onEndReached={this.handleLoadMore}
-                onEndReachedThreshold={0}
+                onEndReachedThreshold={100}
               />
           </View>
         </SafeAreaView>
@@ -1009,7 +1011,7 @@ class DetailsMaterialScreen extends React.Component {
       borderRadius: 5,
       padding:10,
       marginLeft:'auto',
-      marginTop:10,
+      marginBottom:10,
     },
     subText:{
       color: 'rgba(0, 0, 0, 0.8)',
