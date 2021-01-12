@@ -549,11 +549,21 @@ class DetailsMaterialScreen extends React.Component {
       status: [],
       ongoing: false,
       events: [], 
+      time: 10,
     }
 
     constructor(props){
       super(props);
       this.getInfos();
+    }
+
+    refresh() {
+      if(this.state.time==10 && this.interval==undefined){
+        this.interval = setInterval(() => this.setState({ time: parseInt(this.state.time)-1 }), 1000);
+      }
+      if(this.state.time == 0){
+        this.getInfos();
+      }
     }
 
     getInfos = async () => {
@@ -578,6 +588,7 @@ class DetailsMaterialScreen extends React.Component {
         status:status,
         events:events,
         info:info,
+        time:10,
       });
     }
 
@@ -608,6 +619,8 @@ class DetailsMaterialScreen extends React.Component {
       } else if(status.started == true){
           if(status.finished==false){
             var time = status.liveTime.long.split(':');
+            this.setState({onGoing: true});
+            this.refresh();
             return <Timer option="1" min={time[0]} sec={time[1]}/>
             //return status.liveTime.long;
           } else{
@@ -883,6 +896,7 @@ class DetailsMaterialScreen extends React.Component {
             </View>
           </View>
           <View style={[styles.detailsContainer, {/*alignItems:'left'*/}]}>
+          {this.state.onGoing==true ? <View style={styles.listHeader}><Text style={{textAlign:'left'}}>{this.state.time} 초 후 새로고침</Text></View>:<View></View>}
             {events.map(event=>
             (
               this.outputEvents(event)
@@ -892,6 +906,8 @@ class DetailsMaterialScreen extends React.Component {
             <Text>otherParam: {JSON.stringify(otherParam)}</Text> */}
           </View>
           <View style={[styles.detailsContainer, {alignItems:'stretch'}]}>
+          <View style={styles.infoContainer}>
+            </View>
             <View style={styles.infoContainer}>
               <View style={{width: '20%'}}>
                 <Text>경기 날짜</Text>
