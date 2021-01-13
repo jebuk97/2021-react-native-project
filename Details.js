@@ -709,7 +709,7 @@ class DetailsMaterialScreen extends React.Component {
          );
        } else{
           return(
-          <View style={{flexDirection: 'row', marginLeft:'auto'}}>
+          <View style={{flexDirection: 'row', marginLeft:'auto'}} key={event.time}>
               <View style={{margin:5}}>
               <Text style={[styles.small, {textAlign:'right'}]}>{event.nameStr}</Text>
                 <Text style={[styles.small, {textAlign:'right'}]}>{assistStrKo} </Text>
@@ -722,7 +722,7 @@ class DetailsMaterialScreen extends React.Component {
      } else if(event.type=='Substitution'){
        if(event.isHome==true){
         return (
-          <View style={{flexDirection: 'row', marginRight:'auto'}}>
+          <View style={{flexDirection: 'row', marginRight:'auto'}} key={event.time}>
           <View style={{margin:5}}><Text>{event.time}</Text></View>
           <View style={{margin:5}}>
             <Ionicons name="ios-arrow-forward-circle" style={{fontSize: 15.2, color: 'green'}}></Ionicons>
@@ -736,7 +736,7 @@ class DetailsMaterialScreen extends React.Component {
           );
        } else{
         return (
-          <View style={{flexDirection: 'row', marginLeft:'auto'}}>
+          <View style={{flexDirection: 'row', marginLeft:'auto'}} key={event.time}>
           <View style={{margin:5}}>
             <Text style={[styles.small, {textAlign:'right', color: 'green'}]}>{event.swap[0].name}</Text>
             <Text style={[styles.small, {textAlign:'right', color: 'red'}]}>{event.swap[1].name}</Text>
@@ -752,7 +752,7 @@ class DetailsMaterialScreen extends React.Component {
      } else if(event.type=='Card'){
       if(event.isHome==true){
         return (
-          <View style={{flexDirection: 'row', marginRight:'auto'}}>
+          <View style={{flexDirection: 'row', marginRight:'auto'}} key={event.time}>
           <View style={{margin:5}}><Text>{event.time}</Text></View>
           <View style={{margin:5}}>
             {event.card=="Yellow" ? <Ionicons name="tablet-portrait" style={{fontSize:16, color: 'orange'}}></Ionicons> : <Ionicons name="tablet-portrait" style={{fontSize:16, color: 'red'}}></Ionicons>}
@@ -764,7 +764,7 @@ class DetailsMaterialScreen extends React.Component {
         );
        } else{
         return (
-          <View style={{flexDirection: 'row', marginLeft:'auto'}}>
+          <View style={{flexDirection: 'row', marginLeft:'auto'}} key={event.time}>
           <View style={{margin:5}}>
             <Text>{event.nameStr}</Text>
           </View>
@@ -776,7 +776,7 @@ class DetailsMaterialScreen extends React.Component {
         );
        }
      } else if(event.type=='AddedTime'){
-        return (<View style={{flexDirection: 'row', marginRight: 'auto'}}>
+        return (<View style={{flexDirection: 'row', marginRight: 'auto'}} key={event.time}>
         <View style={{margin:5}}><Text>{event.time}</Text></View>
         <View style={{margin:5}}><MaterialIcons name="add-alarm" style={{fontSize:16}}></MaterialIcons></View>
         <View style={{margin:5}}>
@@ -784,7 +784,7 @@ class DetailsMaterialScreen extends React.Component {
         </View>
       </View>);
      }else {
-       return <View><Text>{event.type}</Text></View>
+       return <View key={event.time}><Text>{event.type}</Text></View>
      }
     }
 
@@ -858,7 +858,7 @@ class DetailsMaterialScreen extends React.Component {
         referee = [];
         referee["text"] = "NO-INFO";
       }
-      
+      console.log(status.started);
       return (
         <ScrollView>
         <View style={styles.container}>
@@ -895,6 +895,7 @@ class DetailsMaterialScreen extends React.Component {
                 ))}
             </View>
           </View>
+          {status.started == true ? (
           <View style={[styles.detailsContainer, {/*alignItems:'left'*/}]}>
           {this.state.onGoing==true ? <View style={styles.listHeader}><Text style={{textAlign:'left'}}>{this.state.time} 초 후 새로고침</Text></View>:<View></View>}
             {events.map(event=>
@@ -905,6 +906,9 @@ class DetailsMaterialScreen extends React.Component {
             {/* <Text>itemId: {JSON.stringify(itemId)}</Text>
             <Text>otherParam: {JSON.stringify(otherParam)}</Text> */}
           </View>
+           ) : (
+            <View></View>
+          )}
           <View style={[styles.detailsContainer, {alignItems:'stretch'}]}>
           <View style={styles.infoContainer}>
             </View>

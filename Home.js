@@ -157,7 +157,9 @@ class HomeScreen extends React.Component {
                 this.props.navigation.navigate('Details', {
                   itemId: match.id
                 });
-              }}>
+              }}
+              key = {match.id}
+              >
                {this.currentState(match.status)}
                 <View style={{flexDirection:'row', alignItems:'center', width: '30%'}}>
                   <Text  style={{textAlign: 'right', marginLeft:'auto'}}>{match.home.name}</Text>
