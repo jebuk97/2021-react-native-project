@@ -64,3 +64,6 @@ pm2 stop  pm2를 멈춤
 pm2 log 오류난거 확인가능
 pm2 kill  pm2를 아예 꺼버림
 pm2 delete (삭제시킬 파일명) pm2위에서 돌아가는 파일 삭제
+
+## 5. 만약에 에러나면
+server.js sql 비밀번호 확인 ㅋㅋ...
