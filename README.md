@@ -50,3 +50,17 @@ mysql모듈 ==> npm install -S mysql
 --CREATE DATABASE FOTMOB2; db선택
 --USE FOTMOB2
 --show databases
+
+## 4. pm2설치(선택사항)
+
+터미널에서 npm install pm2 -g pm2설치
+//pm2는 실시간으로 패키지를 관리할 수 있게 해줌
+pm2 start (실행시킬 파일명) 실행
+pm2 start (실행시킬 파일명) --watch
+실행후 실시간으로 변동상황 관리됨
+pm2 list 현재 실행되고 있는 파일
+pm2 monit 현재 실행되고 있는 파일 관리
+pm2 stop  pm2를 멈춤
+pm2 log 오류난거 확인가능
+pm2 kill  pm2를 아예 꺼버림
+pm2 delete (삭제시킬 파일명) pm2위에서 돌아가는 파일 삭제

@@ -165,7 +165,7 @@ class DetailsMaterialScreen extends React.Component {
     
       this.setState({input: ''});
       console.log(text+' submit');
-      const response = await axios.post(host+':3001/newChat', {
+      const response = await axios.post('http://localhost'+':3001/newChat', {
           id: itemId,
           name: name,
           text: text,

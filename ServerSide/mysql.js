@@ -12,6 +12,4 @@ connection.query('SELECT * FROM EXDATA', function (error, results, fields) {
     fs.writeFileSync("nowLog.json",jsonResults);
 });
 
-
-
 connection.end();
