@@ -119,7 +119,6 @@ class DetailsMaterialScreen extends React.Component {
 
       console.log('Test Request to '+host+':3001/chat?id='+itemId+'&page='+this.state.page);
       const response = await axios.get(host+':3001/chat?id='+itemId+'&page='+this.state.page);
-      console.log(response.data);
 
       // socket.on('chatUpdate', (obj) => {
       //   const chat = this.state.data;
@@ -130,9 +129,10 @@ class DetailsMaterialScreen extends React.Component {
       this.getInfos();
 
       this.setState({
-        data : testChats
-      });
-
+        data : response.data,
+        page : this.state.page + 1,
+        }
+      );
     }
 
     componentWillUnmount(){
@@ -171,92 +171,20 @@ class DetailsMaterialScreen extends React.Component {
           text: text,
           targetTeam: team
       });
-      console.log(response.data);
     }
 
-    handleLoadMore = /*async*/() => {
-      this.setState({
-        page: this.state.page + 1
-      });
-      // const response = await axios.get(host+':3001/chat?id='+itemId+'&page='+this.state.page);
-      // console.log(response.data);
-      var moreData = 
-      [{
-        id : this.state.page * 10 + 1,
-        team : '1',
-        name : '작성자',
-        main : this.state.page * 10 + 1+'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
-        date : '2020.01.09',
-      },
-      {
-        id : this.state.page * 10 + 2,
-        team : '1',
-        name : '작성자',
-        main : this.state.page * 10 + 2+'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
-        date : '2020.01.09',
-      },
-      {
-        id : this.state.page * 10 + 3,
-        team : '2',
-        name : '작성자',
-        main : this.state.page * 10 + 3+'그걸 못넣냐',
-        date : '2020.01.09',
-      },
-      {
-        id : this.state.page * 10 + 4,
-        team : '2',
-        name : '작성자',
-        main : this.state.page * 10 + 4+'뭐해 씻팔!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-        date : '2020.01.09',
-      },
-      {
-        id : this.state.page * 10 + 5,
-        team : '1',
-        name : '작성자',
-        main : this.state.page * 10 + 5+'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
-        date : '2020.01.09',
-        },
-        {
-          id : this.state.page * 10 + 6,
-          team : '1',
-          name : '작성자',
-          main : this.state.page * 10 + 6+'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
-          date : '2020.01.09',
-        },
-        {
-          id : this.state.page * 10 + 7,
-          team : '2',
-          name : '작성자',
-          main : this.state.page * 10 + 7+'그걸 못넣냐',
-          date : '2020.01.09',
-        },
-        {
-          id : this.state.page * 10 + 8,
-          team : '2',
-          name : '작성자',
-          main : this.state.page * 10 + 8+'뭐해 씻팔!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!',
-          date : '2020.01.09',
-        },
-        {
-          id : this.state.page * 10 + 9,
-          team : '1',
-          name : '작성자',
-          main : this.state.page * 10 + 9+'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
-          date : '2020.01.09',
-        },
-        {
-          id : this.state.page * 10 + 10,
-          team : '1',
-          name : '작성자',
-          main : this.state.page * 10 + 10+'ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ',
-          date : '2020.01.09',
-          }, ];
+    handleLoadMore = async() => {
+      const { route } = this.props;
+      const { itemId, otherParam } = route.params;
+      const response = await axios.get(host+':3001/chat?id='+itemId+'&page='+this.state.page);
+      var moreData = response.data;
+      console.log(this.state.page);
       if(moreData.length==0){
         return;
       }
-      console.log(this.state.data);
       this.setState({
-        data : this.state.data.concat(moreData)
+        data : this.state.data.concat(moreData),
+        page : this.state.page + 1,
       })
     }
 
@@ -395,18 +323,18 @@ class DetailsMaterialScreen extends React.Component {
     }
 
     renderItem = ({item}) => {
-      if(item.team == '1'){
+      if(item.TEAMNAME == '1'){
         return (
           <View style={styles.chatContainer}>
-            <Text>{item.main}</Text>
-            <Text style={styles.subText}>{item.name} &#183; {item.date}</Text>
+            <Text>{item.DESCRIPTION}</Text>
+            <Text style={styles.subText}>{item.NICKNAME} &#183; {item.GAMEDATE}</Text>
           </View>
         );
       } else{
         return (
           <View style={styles.myChatContainer}>
-            <Text>{item.main}</Text>
-            <Text style={styles.subTextWhite}>{item.name} &#183; {item.date}</Text>
+            <Text>{item.DESCRIPTION}</Text>
+            <Text style={styles.subTextWhite}>{item.NICKNAME} &#183; {item.GAMEDATE}</Text>
           </View>
         );
       }
@@ -487,7 +415,7 @@ class DetailsMaterialScreen extends React.Component {
               <FlatList
                 data={this.state.data}
                 renderItem={this.renderItem}
-                keyExtractor={(item) => String(item.id)}
+                keyExtractor={(item) => String(item.ID)}
                 style={{width:'100%', borderRadius: 5}}
                 onEndReached={this.handleLoadMore}
                 onEndReachedThreshold={100}
@@ -722,7 +650,7 @@ class DetailsMaterialScreen extends React.Component {
      } else if(event.type=='Substitution'){
        if(event.isHome==true){
         return (
-          <View style={{flexDirection: 'row', marginRight:'auto'}} key={event.time}>
+          <View style={{flexDirection: 'row', marginRight:'auto'}} key={event.reactKey}>
           <View style={{margin:5}}><Text>{event.time}</Text></View>
           <View style={{margin:5}}>
             <Ionicons name="ios-arrow-forward-circle" style={{fontSize: 15.2, color: 'green'}}></Ionicons>
@@ -1031,7 +959,7 @@ class DetailsMaterialScreen extends React.Component {
       borderRadius: 5,
       padding:10,
       marginLeft:'auto',
-      marginBottom:10,
+      marginTop:10,
     },
     subText:{
       color: 'rgba(0, 0, 0, 0.8)',

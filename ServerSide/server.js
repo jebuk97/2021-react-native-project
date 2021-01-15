@@ -42,16 +42,17 @@ app.post('/newChat', function (req, res) {
 
 
 app.get('/chat', (req, res) => {
-    var nowID = req.body.id;
-    var nowPage = req.body.nowPage - 1;
+    var nowID = req.query.id;
+    var nowPage = req.query.page - 1;
+    nowPage = nowPage * 10;
 //1빼는 이유 -- 클라이언트에서 1부터 시작 서버는 0부터 시작
     mysqlLoader.query('SELECT * FROM EXDATA WHERE GAMEID='+nowID+' LIMIT '+nowPage+',10',function(err,result){
     if(err){
-        console.log("ERROR"+error);
+        console.log("chat error "+err+' : SELECT * FROM EXDATA WHERE GAMEID='+nowID+' LIMIT '+nowPage+',10');
         res.send("/chat Error Occur");    
     }
     else
-    {
+    {   
         res.json(result);
     }
     });
