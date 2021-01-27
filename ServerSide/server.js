@@ -33,7 +33,7 @@ app.post('/newChat', function (req, res) {
     });
     app.io.on(req.body.id,function(){
         toJSON = JSON.stringify(req.body);
-        app.io.emit(toJSON);
+        app.io.emit('chatUpdate',toJSON);
     });
     console.log(req.body);
     res.send("Complete");
