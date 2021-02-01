@@ -3,12 +3,14 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 var dateutils = require('date-utils');
-app.io = require('socket.io')();
-
+const server = require('http').createServer(app);
+const socketio = require('socket.io');
+const io = socketio.listen(server)
 
 //포트 
 const port = process.env.PORT || 3001;
 
+server.listen(3001,()=>console.log('Server Started at 3001'));
 
 //sql 접속
 var mysql = require('mysql');
@@ -31,10 +33,20 @@ app.post('/newChat', function (req, res) {
     mysqlLoader.query(sql,[values],function(err,result){
         if(err) throw err;         
     });
-    app.io.on(req.body.id,function(){
-        toJSON = JSON.stringify(req.body);
-        app.io.emit('chatUpdate',toJSON);
+    io.on('connection', (socket) => {
+        console.log('socket connected');
+        socket.on('chatUpdate', (msg) => {
+            console.log(msg);
+
+
+            io.emit('chatUpdate', 'hello');
+        })
     });
+    // app.io.on(req.body.id,function(){
+    //     console.log('socket');
+    //     toJSON = JSON.stringify(req.body);
+    //     app.io.emit('chatUpdate',toJSON);
+    // });
     console.log(req.body);
     res.send("Complete");
 });
@@ -58,6 +70,5 @@ app.get('/chat', (req, res) => {
     });
 });
 
-app.listen(3001,()=>console.log('Server Start'));
 
 

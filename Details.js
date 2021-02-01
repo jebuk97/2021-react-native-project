@@ -8,12 +8,12 @@ import react from 'react';
 import { Ionicons, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Fotmob from './fotmob.js';
 import axios from 'axios';
-//import socketio from 'socket.io-client';
+import socketio from 'socket.io-client';
 import { FlatList } from 'react-native-gesture-handler';
 
 const DetailsTopTab = createMaterialTopTabNavigator();
 const host = 'http://localhost';
-//const socket = socektio.connect(host+':3001');
+const socket = socketio.connect(host+':3001');
 
 const testChats = [{
   id : 1,
@@ -120,11 +120,13 @@ class DetailsMaterialScreen extends React.Component {
       console.log('Test Request to '+host+':3001/chat?id='+itemId+'&page='+this.state.page);
       const response = await axios.get(host+':3001/chat?id='+itemId+'&page='+this.state.page);
 
-      // socket.on('chatUpdate', (obj) => {
-      //   const chat = this.state.data;
-      //   obj.concat(chat);
-      //   this.setState({data: obj});
-      // })
+      socket.on('chatUpdate', (obj) => {
+        console.log('new chat detected');
+        console.log(obj);
+        // const chat = this.state.data;
+        // obj.concat(chat);
+        // this.setState({data: obj});
+      })
 
       this.getInfos();
 
@@ -134,9 +136,14 @@ class DetailsMaterialScreen extends React.Component {
         }
       );
     }
+    // componentWillMount(){
+    //   const { route } = this.props;
+    //   const { itemId, otherParam } = route.params;
+    //   socket.emit('chatjoin', itemId);
+    // }
 
     componentWillUnmount(){
-      // socket.off('chatUpdate');
+      socket.off('chatUpdate');
     }
 
       getInfos = async() => {
@@ -162,7 +169,7 @@ class DetailsMaterialScreen extends React.Component {
       const name = '익명';
       const text = this.state.input;
       const team = this.state.target;
-    
+      
       this.setState({input: ''});
       console.log(text+' submit');
       const response = await axios.post('http://localhost'+':3001/newChat', {
